@@ -24,11 +24,14 @@ jobs:
 
   container:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
       - run: docker build -t frantic-mcp:ci .
       # The bridge is only useful if the container answers introspection, which is also the
       # exact check the directories run. Assert it here rather than discovering it on submit.
+      # A stdio MCP server is a server: it does not exit when stdin closes, so `docker run`
+      # would hang here until the job timeout. Bound it and judge on the captured output.
       - name: Answers MCP introspection
         run: |
           {
@@ -36,7 +39,7 @@ jobs:
             printf '%s\n' '{"jsonrpc":"2.0","method":"notifications/initialized"}'
             printf '%s\n' '{"jsonrpc":"2.0","id":2,"method":"tools/list"}'
             sleep 25
-          } | docker run -i --rm frantic-mcp:ci > out.jsonl || true
+          } | timeout 45 docker run -i --rm frantic-mcp:ci > out.jsonl || true
           node -e '
             const lines = require("fs").readFileSync("out.jsonl", "utf8").trim().split("\n").filter(Boolean).map(JSON.parse);
             const tools = lines.find((m) => m.id === 2)?.result?.tools ?? [];
