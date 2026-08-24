@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ["20", "22", "24"]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: docker build -t frantic-mcp:ci .
+      # The bridge is only useful if the container answers introspection, which is also the
+      # exact check the directories run. Assert it here rather than discovering it on submit.
+      - name: Answers MCP introspection
+        run: |
+          {
+            printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"ci","version":"1"}}}'
+            printf '%s\n' '{"jsonrpc":"2.0","method":"notifications/initialized"}'
+            printf '%s\n' '{"jsonrpc":"2.0","id":2,"method":"tools/list"}'
+            sleep 25
+          } | docker run -i --rm frantic-mcp:ci > out.jsonl || true
+          node -e '
+            const lines = require("fs").readFileSync("out.jsonl", "utf8").trim().split("\n").filter(Boolean).map(JSON.parse);
+            const tools = lines.find((m) => m.id === 2)?.result?.tools ?? [];
+            if (!tools.length) { console.error("no tools returned"); process.exit(1); }
+            console.log(`ok: ${tools.length} tools`);
+          '
