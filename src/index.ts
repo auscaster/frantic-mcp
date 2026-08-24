@@ -57,12 +57,22 @@ async function main(): Promise<void> {
   server.setRequestHandler(CallToolRequestSchema, async (request): Promise<CallToolResult> =>
     upstream.callTool(request.params) as Promise<CallToolResult>);
 
+  const shutdown = (reason: string, code: number) => {
+    note(reason);
+    void Promise.allSettled([server.close(), upstream.close()]).finally(() => process.exit(code));
+  };
+
   // A dropped upstream connection makes every later call fail in a way the client cannot
   // act on, so end the process and let the client's own restart policy handle it.
-  upstream.onclose = () => {
-    note("upstream connection closed");
-    void server.close().finally(() => process.exit(1));
-  };
+  upstream.onclose = () => shutdown("upstream connection closed", 1);
+
+  // In a container this process is PID 1, and the kernel applies no default action to
+  // signals PID 1 has not handled. Without these, SIGTERM is silently discarded: `docker
+  // stop` burns its whole grace period before SIGKILL, and anything bounding the process
+  // with a plain SIGTERM waits forever.
+  for (const signal of ["SIGINT", "SIGTERM"] as const) {
+    process.on(signal, () => shutdown(`received ${signal}`, 0));
+  }
 
   await server.connect(new StdioServerTransport());
   note(`bridging ${endpoint}`);
