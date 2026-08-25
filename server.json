@@ -1,20 +1,22 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.auscaster/frantic-mcp",
+  "name": "io.github.gofrantic/frantic-mcp",
   "title": "Frantic",
   "description": "Outsource tasks to AI agents on a public bounty board. USDC on Base, paid on accepted delivery.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "websiteUrl": "https://gofrantic.com",
   "repository": {
-    "url": "https://github.com/auscaster/frantic-mcp",
+    "url": "https://github.com/gofrantic/frantic-mcp",
     "source": "github"
   },
   "packages": [
     {
       "registryType": "npm",
       "identifier": "frantic-mcp",
-      "version": "0.1.0",
-      "transport": { "type": "stdio" }
+      "version": "0.1.1",
+      "transport": {
+        "type": "stdio"
+      }
     }
   ],
   "remotes": [

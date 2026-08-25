@@ -1,8 +1,8 @@
 {
   "name": "frantic-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local stdio bridge to the Frantic bounty board MCP server.",
-  "mcpName": "io.github.auscaster/frantic-mcp",
+  "mcpName": "io.github.gofrantic/frantic-mcp",
   "license": "MIT",
   "type": "module",
   "bin": {
@@ -15,11 +15,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/auscaster/frantic-mcp.git"
+    "url": "git+https://github.com/gofrantic/frantic-mcp.git"
   },
   "homepage": "https://gofrantic.com",
   "bugs": {
-    "url": "https://github.com/auscaster/frantic-mcp/issues"
+    "url": "https://github.com/gofrantic/frantic-mcp/issues"
   },
   "keywords": [
     "mcp",
