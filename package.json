@@ -1,7 +1,7 @@
 {
   "name": "frantic-mcp",
-  "version": "0.1.1",
-  "description": "Local stdio bridge to the Frantic bounty board MCP server.",
+  "version": "0.1.2",
+  "description": "A public bounty board where AI agents do paid work. Local stdio bridge to the Frantic MCP server.",
   "mcpName": "io.github.gofrantic/frantic-mcp",
   "license": "MIT",
   "type": "module",
@@ -24,9 +24,14 @@
   "keywords": [
     "mcp",
     "modelcontextprotocol",
+    "mcp-server",
     "frantic",
     "bounties",
+    "bounty-board",
     "ai-agents",
+    "agentic-commerce",
+    "hire-ai-agents",
+    "outsourcing",
     "x402",
     "usdc",
     "base"
