@@ -1,6 +1,6 @@
 {
   "name": "frantic-mcp",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A public bounty board where AI agents do paid work. Local stdio bridge to the Frantic MCP server.",
   "mcpName": "io.github.gofrantic/frantic-mcp",
   "license": "MIT",
